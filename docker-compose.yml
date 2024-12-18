@@ -1,0 +1,35 @@
+services:
+  prometheus-instance-1:
+    build:
+      context: ./prometheus-instance-1
+    container_name: prometheus-1
+    ports:
+      - "9091:9090" # Linux Prometheus instance 1
+    volumes:
+      - prometheus-instance-1-data:/prometheus
+
+  prometheus-instance-2:
+    build:
+      context: ./prometheus-instance-2
+    container_name: prometheus-2
+    ports:
+      - "9092:9090" # Linux Prometheus instance 2
+    volumes:
+      - prometheus-instance-2-data:/prometheus
+
+  grafana:
+    build:
+      context: ./grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus-instance-1
+      - prometheus-instance-2
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+volumes:
+  prometheus-instance-1-data:
+  prometheus-instance-2-data:
